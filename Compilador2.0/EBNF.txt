@@ -1,0 +1,32 @@
+<programa> ::= <instrucao> | <condicional>|<looping>
+<looping>::= <repeticao> | <iteracao>
+<instrucao> ::= <atribuicao> | <expressao>
+<expressao> ::= <variavel> | <aritmetica>
+<variavel> ::= <identificador> | <numerico>
+<aritmetica> ::= <variavel> <operador> <variavel>
+<atribuicao> ::= <identificador> <sinal_atribuicao> <expressao>
+<condicional> ::= <if> <expressao_relacional> <then> <programa> <else> <programa>
+<repeticao> ::= <while> <expressao_relacional> <do> <programa>
+<iteracao> ::= <for> <atribuicao> <expressao_relacional> <atribuicao> <do> <programa>
+<expressao_relacional> ::= <variavel> <operador_relacional> <variavel>
+<operador_relacional> ::= <menor> | <maior> | <igual> | <diferente> | <menor_igual> | <maior_igual>
+<identificador> ::= [a-zA-Z]+
+<numerico> ::= ^[0-9]+(?:\.[0-9]+)?$
+<operador> ::= <soma> | <subtracao> | <multiplicacao> | <divisao>
+<sinal_atribuicao> ::= "="
+<if> ::= "if"
+<then> ::= "then"
+<else> ::= "else"
+<while> ::= "while"
+<do>::="do"
+<for>::="for"
+<soma> ::= "+"
+<subtracao> ::= "-"
+<multiplicacao> ::= "*"
+<divisao> ::= "/"
+<menor> ::= "<"
+<maior> ::= ">"
+<igual> ::= "=="
+<diferente> ::= "<>"
+<menor_igual>::= "<="
+<maior_igual>::= ">="

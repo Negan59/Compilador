@@ -1,0 +1,60 @@
+P->A|C|R
+A-><identificador><atribuição>E
+E->D|EA
+D-><identificador>|<numerico>
+EA->D<aritmetico>E
+C-><if>ER<then>P(<else>P)<end>
+R-> W|F
+W-><while>ER<do>P<end>
+F-><for>A ER A<do>P<end>
+ER->D|OP
+OP->D<relacional>D
+
+FIRST
+P(P)->P(A),P(C),P(R),<end>
+P(A)-><identificador>
+P(E)->P(D)
+P(EA)-><identificador>
+P(C)-><if>
+P(R)->P(W),P(F)
+P(W)-><while>
+P(F)-><for>
+P(D)-><identificador>,<numerico>
+P(ER)->P(D),P(OP)
+P(OP)->P(D)
+
+
+FOLLOW
+S(P)->{$},<else>,S(C),S(R)
+S(A)->{$},S(P),S(ER),<do>
+S(E)->{$},S(A),S(EA)
+S(EA)->{$},S(E)
+S(C)->{$},S(P)
+S(R)->{$},S(P)
+S(W)->{$},S(R)
+S(F)->{$},S(R)
+S(D)->{$},,S(E),<aritmetico>,S(ER),S(OP)
+S(ER)->{$},<then>,<do>
+
+
+if token == toke then a = 1 else a = 9
+
+if a < b then 
+	a = 2
+	b = 3
+	if b < c then a = 4 end do b
+end
+
+
+
+if a < b then 
+	a = 2
+	b = 3
+	if b < c then a = 4 end
+	a = 18
+end
+while a < 5 do
+	a = 3
+	b = 5
+end
+for a = 2 a < 7 a = a + 1 do
