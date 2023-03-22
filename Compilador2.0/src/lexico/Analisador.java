@@ -23,6 +23,10 @@ public class Analisador{
         column = 0;
     }
     
+    public void voltarPos(){
+        this.pos--;
+    }
+    
    
     public Token nextToken() {
         char currentChar = 's';

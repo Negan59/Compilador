@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="589.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="compilador2.pkg0.EditorController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="589.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="compilador2.pkg0.EditorController">
    <top>
       <VBox BorderPane.alignment="CENTER">
          <BorderPane.margin>
@@ -56,44 +56,54 @@
       </VBox>
    </top>
    <bottom>
-      <TabPane BorderPane.alignment="CENTER">
-         <tabs>
-            <Tab fx:id="tabToken" text="Tokens">
-               <content>
-                  <ScrollPane>
+      <ScrollPane BorderPane.alignment="CENTER">
+         <content>
+            <TabPane>
+               <tabs>
+                  <Tab fx:id="tabToken" text="Tokens">
                      <content>
-                        <VBox fx:id="vboxResultado" alignment="TOP_CENTER" prefHeight="263.0" prefWidth="680.0" style="-fx-border-color: black; -fx-background-color: #d3d3d3;">
-                           <children>
-                              <Label alignment="CENTER" text="Resultados">
-                                 <font>
-                                    <Font name="Arial Black" size="15.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </VBox>
+                        <ScrollPane>
+                           <content>
+                              <VBox fx:id="vboxResultado" prefHeight="263.0" prefWidth="1000.0" style="-fx-border-color: black; -fx-background-color: #d3d3d3;">
+                                 <children>
+                                    <Label alignment="CENTER" text="Tokens">
+                                       <font>
+                                          <Font name="Arial Black" size="15.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets left="5.0" top="5.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                           </content>
+                        </ScrollPane>
                      </content>
-                  </ScrollPane>
-               </content>
-            </Tab>
-            <Tab fx:id="tabErro" text="Erros">
-               <content>
-                  <ScrollPane>
+                  </Tab>
+                  <Tab fx:id="tabErro" text="Erros">
                      <content>
-                        <VBox fx:id="vboxResultado1" alignment="TOP_CENTER" prefHeight="263.0" prefWidth="680.0" style="-fx-border-color: black; -fx-background-color: #d3d3d3;">
-                           <children>
-                              <Label alignment="CENTER" text="Resultados">
-                                 <font>
-                                    <Font name="Arial Black" size="15.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </VBox>
+                        <ScrollPane>
+                           <content>
+                              <VBox fx:id="vboxResultado1" prefHeight="263.0" prefWidth="1000.0" style="-fx-border-color: black; -fx-background-color: #d3d3d3;">
+                                 <children>
+                                    <Label alignment="CENTER" text="Erros">
+                                       <font>
+                                          <Font name="Arial Black" size="15.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="5.0" top="5.0" />
+                                       </padding>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                           </content>
+                        </ScrollPane>
                      </content>
-                  </ScrollPane>
-               </content>
-            </Tab>
-         </tabs>
-      </TabPane>
+                  </Tab>
+               </tabs>
+            </TabPane>
+         </content>
+      </ScrollPane>
    </bottom>
    <left>
       <ScrollPane BorderPane.alignment="CENTER">
@@ -101,7 +111,7 @@
             <HBox>
                <children>
                   <VBox fx:id="vboxLateral" alignment="TOP_CENTER" prefHeight="375.0" prefWidth="28.0" />
-                  <TextArea fx:id="txTeste" prefHeight="279.0" prefWidth="657.0" />
+                  <TextArea fx:id="txTeste" onKeyPressed="#evtCompila" prefHeight="279.0" prefWidth="657.0" />
                </children>
             </HBox>
          </content>
