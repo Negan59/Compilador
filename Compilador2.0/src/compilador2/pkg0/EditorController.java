@@ -12,6 +12,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+import exceptions.ExcecoesSintaticas;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -63,7 +65,11 @@ public class EditorController implements Initializable {
             for (int j = 0; j < Analisador.erros.size(); j++) {
                 linhas.get(Analisador.erros.get(j).getLinha() - 1).setStyle("-fx-background-color:none");
             }
+            for (int j = 0; j < AnalisadoSintatico.errosSintatico.size(); j++) {
+                linhas.get(AnalisadoSintatico.errosSintatico.get(j).getLinha() - 1).setStyle("-fx-background-color:none");
+            }
             Analisador.erros.removeAll(Analisador.erros);
+            AnalisadoSintatico.errosSintatico.removeAll(AnalisadoSintatico.errosSintatico);
             vboxResultado.getChildren().remove(1, vboxResultado.getChildren().size());
             vboxResultado1.getChildren().remove(1, vboxResultado1.getChildren().size());
             lista.removeAll(lista);
@@ -96,18 +102,24 @@ public class EditorController implements Initializable {
         if (Analisador.erros.size() == 0) {
             try {
                 as.P();
+                if(AnalisadoSintatico.errosSintatico.size() > 0){
+                    throw new ExcecoesSintaticas("Teve erro sintático viu");
+                }
                 Label l = new Label();
                 l.setText("Compilação realizada com sucesso!!!");
                 l.setStyle("-fx-text-fill: green;");
                 lista.add(l);
                 vboxResultado.getChildren().add(l);
             } catch (Exception ex) {
-                Label l = new Label();
-                l.setText("Erro Sintático : " + ex.getMessage());
-                System.out.println(ex.getMessage());
-                l.setStyle("-fx-text-fill: red;");
-                lista.add(l);
-                vboxResultado1.getChildren().add(l);
+                for(int i = 0;i<AnalisadoSintatico.errosSintatico.size();i++){
+                    Label l = new Label();
+                    l.setText("Erro Sintático : " + AnalisadoSintatico.errosSintatico.get(i).getMsg());
+                    linhas.get(AnalisadoSintatico.errosSintatico.get(i).getLinha() - 1).setStyle("-fx-background-color:red");
+                    l.setStyle("-fx-text-fill: red;");
+                    lista.add(l);
+                    vboxResultado1.getChildren().add(l);
+                }
+
             }
         } else {
             Label l = new Label();
@@ -123,8 +135,11 @@ public class EditorController implements Initializable {
         for (int j = 0; j < Analisador.erros.size(); j++) {
             linhas.get(Analisador.erros.get(j).getLinha() - 1).setStyle("-fx-background-color:none");
         }
+        for (int j = 0; j < AnalisadoSintatico.errosSintatico.size(); j++) {
+            linhas.get(AnalisadoSintatico.errosSintatico.get(j).getLinha() - 1).setStyle("-fx-background-color:none");
+        }
         Analisador.erros.removeAll(Analisador.erros);
-        txTeste.setText("");
+        AnalisadoSintatico.errosSintatico.removeAll(AnalisadoSintatico.errosSintatico);
         vboxResultado.getChildren().remove(1, vboxResultado.getChildren().size());
         vboxResultado1.getChildren().remove(1, vboxResultado1.getChildren().size());
         lista.removeAll(lista);

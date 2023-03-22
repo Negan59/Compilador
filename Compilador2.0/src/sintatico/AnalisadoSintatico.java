@@ -1,8 +1,11 @@
 package sintatico;
 
+import Erro.Erro;
 import exceptions.ExcecoesSintaticas;
 import lexico.Analisador;
 import lexico.Token;
+
+import java.util.ArrayList;
 
 public class AnalisadoSintatico {
 
@@ -10,6 +13,7 @@ public class AnalisadoSintatico {
     private Token token;
 
     private boolean estouFor = false;
+    public static ArrayList<Erro> errosSintatico  =new ArrayList();
 
     public AnalisadoSintatico(Analisador scanner) {
         this.scanner = scanner;
@@ -25,10 +29,14 @@ public class AnalisadoSintatico {
             } else if (token.getType() == Token.TK_IDENTIFIER) {
                 A();
             } else {
-                throw new ExcecoesSintaticas("(Identificador,if ou while)" + " era esperado, foi encontrado o token " + token.toString());
+                errosSintatico.add(new Erro("(Identificador,if, for ou while)" + " era esperado, foi encontrado o token " + token.toString(), token.getLine(), token.getColumn()));
+                while(token.getType() != Token.TK_IDENTIFIER && token.getType() != Token.TK_LOOP && token.getType() != Token.TK_LOOPFOR && token.getType() != Token.TK_CONDITIONAL){
+                    leproximo();
+                }
+                P();
             }
         } else {
-            throw new ExcecoesSintaticas("não há continuação na expressão iniciada por : " + token.toString());
+            errosSintatico.add(new Erro("não há continuação na expressão iniciada por : " + token.toString(), token.getLine(), token.getColumn()));
         }
     }
 
@@ -38,7 +46,11 @@ public class AnalisadoSintatico {
             leproximo();
             E();
         } else {
-            throw new ExcecoesSintaticas(Token.TK_TEXT[Token.TK_ASSIGN] + " era esperado, foi encontrado o token " + token.toString());
+            errosSintatico.add(new Erro(Token.TK_TEXT[Token.TK_ASSIGN] + " era esperado, foi encontrado o token " + token.toString(), token.getLine(), token.getColumn()));
+            while(token.getType() != Token.TK_IDENTIFIER && token.getType() != Token.TK_LOOP && token.getType() != Token.TK_LOOPFOR && token.getType() != Token.TK_CONDITIONAL){
+                leproximo();
+            }
+            P();
         }
 
         if (!scanner.isEOF() && token.getType() != Token.TK_CONDITIONAL3 && token.getType() != Token.TK_END && estouFor != true) {
@@ -66,7 +78,7 @@ public class AnalisadoSintatico {
 
     public void D() {
         if (token.getType() != Token.TK_IDENTIFIER && token.getType() != Token.TK_NUMBER) {
-            throw new ExcecoesSintaticas("numero ou um identificador" + " era esperado, foi encontrado o token " + token.toString());
+            errosSintatico.add(new Erro("numero ou um identificador" + " era esperado, foi encontrado o token " + token.toString(), token.getLine(), token.getColumn()));
         }
     }
 
@@ -98,7 +110,11 @@ public class AnalisadoSintatico {
                 P();
             }
             if (token.getType() != Token.TK_END) {
-                throw new ExcecoesSintaticas(Token.TK_TEXT[Token.TK_END] + " era esperado, foi encontrado o token " + token.toString());
+                errosSintatico.add(new Erro(Token.TK_TEXT[Token.TK_END] + " era esperado, foi encontrado o token " + token.toString(), token.getLine(), token.getColumn()));
+                while(token.getType() != Token.TK_IDENTIFIER && token.getType() != Token.TK_LOOP && token.getType() != Token.TK_LOOPFOR && token.getType() != Token.TK_CONDITIONAL){
+                    leproximo();
+                }
+                P();
             } else {
                 if (!scanner.isEOF()) {
                     token = scanner.nextToken();
@@ -108,7 +124,11 @@ public class AnalisadoSintatico {
                 }
             }
         } else {
-            throw new ExcecoesSintaticas(Token.TK_TEXT[Token.TK_CONDITIONAL2] + " era esperado, foi encontrado o token " + token.toString());
+            errosSintatico.add(new Erro(Token.TK_TEXT[Token.TK_CONDITIONAL2] + " era esperado, foi encontrado o token " + token.toString(), token.getLine(), token.getColumn()));
+            while(token.getType() != Token.TK_IDENTIFIER && token.getType() != Token.TK_LOOP && token.getType() != Token.TK_LOOPFOR && token.getType() != Token.TK_CONDITIONAL){
+                leproximo();
+            }
+            P();
         }
 
     }
@@ -133,7 +153,11 @@ public class AnalisadoSintatico {
             leproximo();
             P();
             if (token.getType() != Token.TK_END) {
-                throw new ExcecoesSintaticas(Token.TK_TEXT[Token.TK_END] + " era esperado, foi encontrado o token " + token.toString());
+                errosSintatico.add(new Erro(Token.TK_TEXT[Token.TK_END] + " era esperado, foi encontrado o token " + token.toString(), token.getLine(), token.getColumn()));
+                while(token.getType() != Token.TK_IDENTIFIER && token.getType() != Token.TK_LOOP && token.getType() != Token.TK_LOOPFOR && token.getType() != Token.TK_CONDITIONAL){
+                    leproximo();
+                }
+                P();
             } else {
                 if (!scanner.isEOF()) {
                     token = scanner.nextToken();
@@ -143,7 +167,11 @@ public class AnalisadoSintatico {
                 }
             }
         } else {
-            throw new ExcecoesSintaticas(Token.TK_TEXT[Token.TK_LOOP2] + " era esperado, foi encontrado o token " + token.toString());
+            errosSintatico.add(new Erro(Token.TK_TEXT[Token.TK_LOOP2] + " era esperado, foi encontrado o token " + token.toString(), token.getLine(), token.getColumn()));
+            while(token.getType() != Token.TK_IDENTIFIER && token.getType() != Token.TK_LOOP && token.getType() != Token.TK_LOOPFOR && token.getType() != Token.TK_CONDITIONAL){
+                leproximo();
+            }
+            P();
         }
 
     }
@@ -160,7 +188,11 @@ public class AnalisadoSintatico {
             estouFor = false;
             P();
             if (token.getType() != Token.TK_END) {
-                throw new ExcecoesSintaticas(Token.TK_TEXT[Token.TK_END] + " era esperado, foi encontrado o token " + token.toString());
+                errosSintatico.add(new Erro(Token.TK_TEXT[Token.TK_END] + " era esperado, foi encontrado o token " + token.toString(), token.getLine(), token.getColumn()));
+                while(token.getType() != Token.TK_IDENTIFIER && token.getType() != Token.TK_LOOP && token.getType() != Token.TK_LOOPFOR && token.getType() != Token.TK_CONDITIONAL){
+                    leproximo();
+                }
+                P();
             } else {
                 if (!scanner.isEOF()) {
                     token = scanner.nextToken();
@@ -171,7 +203,11 @@ public class AnalisadoSintatico {
             }
 
         } else {
-            throw new ExcecoesSintaticas(Token.TK_TEXT[Token.TK_LOOP2] + " era esperado, foi encontrado o token " + token.toString());
+            errosSintatico.add(new Erro(Token.TK_TEXT[Token.TK_LOOP2] + " era esperado, foi encontrado o token " + token.toString(), token.getLine(), token.getColumn()));
+            while(token.getType() != Token.TK_IDENTIFIER && token.getType() != Token.TK_LOOP && token.getType() != Token.TK_LOOPFOR && token.getType() != Token.TK_CONDITIONAL){
+                leproximo();
+            }
+            P();
         }
     }
 
@@ -180,7 +216,8 @@ public class AnalisadoSintatico {
             token = scanner.nextToken();
             return true;
         } else {
-            throw new ExcecoesSintaticas("Expressão incompleta, falta a sequencia do comando");
+            errosSintatico.add(new Erro("Expressão incompleta, falta a sequencia do comando",token.getLine(),token.getColumn()));
+            throw new ExcecoesSintaticas("Teve erro sintático viu");
         }
     }
 
