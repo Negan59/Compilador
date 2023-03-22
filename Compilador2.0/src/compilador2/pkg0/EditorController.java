@@ -1,15 +1,25 @@
 package compilador2.pkg0;
 
-import static compilador2.pkg0.Compilador20.erro;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import lexico.Analisador;
 import lexico.Token;
 import sintatico.AnalisadoSintatico;
@@ -24,10 +34,19 @@ public class EditorController implements Initializable {
     private VBox vboxResultado;
     private ArrayList<Label> lista = new ArrayList();
     private ArrayList<Label> linhas = new ArrayList();
+    private String textoArquivo = "";
+    @FXML
+    private VBox vboxResultado1;
+    @FXML
+    private Tab tabToken;
+    @FXML
+    private Tab tabErro;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        for (int i = 1; i <= 30; i++) {
+        tabToken.setClosable(false);
+        tabErro.setClosable(false);
+        for (int i = 1; i <= 60; i++) {
             Label nu = new Label();
             nu.setText("" + i);
             linhas.add(nu);
@@ -45,7 +64,8 @@ public class EditorController implements Initializable {
                 linhas.get(Analisador.erros.get(j).getLinha() - 1).setStyle("-fx-background-color:none");
             }
             Analisador.erros.removeAll(Analisador.erros);
-            vboxResultado.getChildren().remove(1, lista.size() + 1);
+            vboxResultado.getChildren().remove(1, vboxResultado.getChildren().size());
+            vboxResultado1.getChildren().remove(1, vboxResultado1.getChildren().size());
             lista.removeAll(lista);
         }
         try {
@@ -73,28 +93,28 @@ public class EditorController implements Initializable {
         }
         Analisador scanner2 = new Analisador(txTeste.getText());
         AnalisadoSintatico as = new AnalisadoSintatico(scanner2);
-        if(Analisador.erros.size()==0){
-        try {
-            as.P();
-            Label l = new Label();
-            l.setText("Compilação realizada com sucesso!!!");
-            l.setStyle("-fx-text-fill: green;");
-            lista.add(l);
-            vboxResultado.getChildren().add(l);
-        } catch (Exception ex) {
-            Label l = new Label();
-            l.setText("Erro Sintático : " + ex.getMessage());
-            System.out.println(ex.getMessage());
-            l.setStyle("-fx-text-fill: red;");
-            lista.add(l);
-            vboxResultado.getChildren().add(l);
-        }
-        }else{
+        if (Analisador.erros.size() == 0) {
+            try {
+                as.P();
+                Label l = new Label();
+                l.setText("Compilação realizada com sucesso!!!");
+                l.setStyle("-fx-text-fill: green;");
+                lista.add(l);
+                vboxResultado.getChildren().add(l);
+            } catch (Exception ex) {
+                Label l = new Label();
+                l.setText("Erro Sintático : " + ex.getMessage());
+                System.out.println(ex.getMessage());
+                l.setStyle("-fx-text-fill: red;");
+                lista.add(l);
+                vboxResultado1.getChildren().add(l);
+            }
+        } else {
             Label l = new Label();
             l.setText("Erro Sintático : " + "Não é um statement");
             l.setStyle("-fx-text-fill: red;");
             lista.add(l);
-            vboxResultado.getChildren().add(l);
+            vboxResultado1.getChildren().add(l);
         }
     }
 
@@ -105,8 +125,44 @@ public class EditorController implements Initializable {
         }
         Analisador.erros.removeAll(Analisador.erros);
         txTeste.setText("");
-        vboxResultado.getChildren().remove(1, lista.size() + 1);
+        vboxResultado.getChildren().remove(1, vboxResultado.getChildren().size());
+        vboxResultado1.getChildren().remove(1, vboxResultado1.getChildren().size());
         lista.removeAll(lista);
+    }
+
+    @FXML
+    private void evtAbrir(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File("c:\\"));
+        File arquivoSelecionado = fileChooser.showOpenDialog(null);
+
+        if (arquivoSelecionado != null) {
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(arquivoSelecionado)))) {
+                StringBuilder sb = new StringBuilder();
+                String linha;
+                while ((linha = br.readLine()) != null) {
+                    sb.append(linha).append("\n");
+                }
+                txTeste.setText(sb.toString());
+            } catch (IOException e) {
+                System.out.println("Erro ao ler o arquivo " + arquivoSelecionado.getName() + ": " + e.getMessage());
+            }
+        }
+    }
+
+    @FXML
+    private void evtSalvar(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File("c:\\"));
+        File arquivoSelecionado = fileChooser.showSaveDialog(null);
+
+        if (arquivoSelecionado != null) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(arquivoSelecionado))) {
+                bw.write(txTeste.getText());
+            } catch (IOException e) {
+                System.out.println("Erro ao salvar o arquivo " + arquivoSelecionado.getName() + ": " + e.getMessage());
+            }
+        }
     }
 
 }

@@ -37,24 +37,3 @@ S(D)->{$},,S(E),<aritmetico>,S(ER),S(OP)
 S(ER)->{$},<then>,<do>
 
 
-if token == toke then a = 1 else a = 9
-
-if a < b then 
-	a = 2
-	b = 3
-	if b < c then a = 4 end do b
-end
-
-
-
-if a < b then 
-	a = 2
-	b = 3
-	if b < c then a = 4 end
-	a = 18
-end
-while a < 5 do
-	a = 3
-	b = 5
-end
-for a = 2 a < 7 a = a + 1 do

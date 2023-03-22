@@ -8,8 +8,6 @@ public class AnalisadoSintatico {
 
     private Analisador scanner;
     private Token token;
-    private int CouR = 0;
-    private int prox = 0;
 
     private boolean estouFor = false;
 
@@ -19,21 +17,17 @@ public class AnalisadoSintatico {
     }
 
     public void P() {
-        if (!scanner.isEOF()){
+        if (!scanner.isEOF()) {
             if (token.getType() == Token.TK_CONDITIONAL) {
                 C();
-            }
-            else if (token.getType() == Token.TK_LOOP || token.getType() == Token.TK_LOOPFOR) {
+            } else if (token.getType() == Token.TK_LOOP || token.getType() == Token.TK_LOOPFOR) {
                 R();
-            }
-            else if (token.getType() == Token.TK_IDENTIFIER) {
+            } else if (token.getType() == Token.TK_IDENTIFIER) {
                 A();
-            }
-            else {
+            } else {
                 throw new ExcecoesSintaticas("(Identificador,if ou while)" + " era esperado, foi encontrado o token " + token.toString());
             }
-        }
-        else {
+        } else {
             throw new ExcecoesSintaticas("não há continuação na expressão iniciada por : " + token.toString());
         }
     }
@@ -47,7 +41,7 @@ public class AnalisadoSintatico {
             throw new ExcecoesSintaticas(Token.TK_TEXT[Token.TK_ASSIGN] + " era esperado, foi encontrado o token " + token.toString());
         }
 
-        if (!scanner.isEOF() && token.getType() != Token.TK_CONDITIONAL3 && token.getType() != Token.TK_END && estouFor != true){
+        if (!scanner.isEOF() && token.getType() != Token.TK_CONDITIONAL3 && token.getType() != Token.TK_END && estouFor != true) {
             P();
         }
 
@@ -55,14 +49,12 @@ public class AnalisadoSintatico {
 
     public void E() {
         D();
-        if (!scanner.isEOF()){
+        if (!scanner.isEOF()) {
             leproximo();
             EA();
         }
 
-
     }
-
 
     public void EA() {
 
@@ -85,12 +77,10 @@ public class AnalisadoSintatico {
         }
     }
 
-
-
     public void ER() {
 
         D();
-        if (!scanner.isEOF()){
+        if (!scanner.isEOF()) {
             leproximo();
             OP();
         }
@@ -100,33 +90,33 @@ public class AnalisadoSintatico {
         leproximo();
         ER();
         leproximo();
-        if (token.getType() == Token.TK_CONDITIONAL2){
+        if (token.getType() == Token.TK_CONDITIONAL2) {
             leproximo();
             P();
-            if(token.getType() == Token.TK_CONDITIONAL3){
+            if (token.getType() == Token.TK_CONDITIONAL3) {
                 leproximo();
                 P();
             }
-            if (token.getType() != Token.TK_END){
+            if (token.getType() != Token.TK_END) {
                 throw new ExcecoesSintaticas(Token.TK_TEXT[Token.TK_END] + " era esperado, foi encontrado o token " + token.toString());
-            }
-            else{
-                if (!scanner.isEOF()){
+            } else {
+                if (!scanner.isEOF()) {
                     token = scanner.nextToken();
-                    P();
+                    if (token.getType() != Token.TK_END) {
+                        P();
+                    }
                 }
             }
-        }
-        else{
+        } else {
             throw new ExcecoesSintaticas(Token.TK_TEXT[Token.TK_CONDITIONAL2] + " era esperado, foi encontrado o token " + token.toString());
         }
 
     }
 
     public void R() {
-        if(token.getType() == Token.TK_LOOP){
+        if (token.getType() == Token.TK_LOOP) {
             W();
-        }else{
+        } else {
             F();
         }
 
@@ -135,19 +125,21 @@ public class AnalisadoSintatico {
         }
     }
 
-    public void W(){
+    public void W() {
         leproximo();
         ER();
         leproximo();
         if (token.getType() == Token.TK_LOOP2) {
             leproximo();
             P();
-            if(token.getType() != Token.TK_END){
+            if (token.getType() != Token.TK_END) {
                 throw new ExcecoesSintaticas(Token.TK_TEXT[Token.TK_END] + " era esperado, foi encontrado o token " + token.toString());
-            }else{
-                if(!scanner.isEOF()){
+            } else {
+                if (!scanner.isEOF()) {
                     token = scanner.nextToken();
-                    P();
+                    if(token.getType() != Token.TK_END){
+                        P();
+                    }
                 }
             }
         } else {
@@ -156,39 +148,38 @@ public class AnalisadoSintatico {
 
     }
 
-    public void F(){
+    public void F() {
         estouFor = true;
         leproximo();
         A();
         ER();
         leproximo();
         A();
-            if (token.getType() == Token.TK_LOOP2 && !scanner.isEOF()) {
-                leproximo();
-                estouFor = false;
-                P();
-                if(token.getType() != Token.TK_END){
-                    throw new ExcecoesSintaticas(Token.TK_TEXT[Token.TK_END] + " era esperado, foi encontrado o token " + token.toString());
-                }else{
-                    if(!scanner.isEOF()){
-                        token = scanner.nextToken();
+        if (token.getType() == Token.TK_LOOP2 && !scanner.isEOF()) {
+            leproximo();
+            estouFor = false;
+            P();
+            if (token.getType() != Token.TK_END) {
+                throw new ExcecoesSintaticas(Token.TK_TEXT[Token.TK_END] + " era esperado, foi encontrado o token " + token.toString());
+            } else {
+                if (!scanner.isEOF()) {
+                    token = scanner.nextToken();
+                    if(token.getType() != Token.TK_END){
                         P();
                     }
                 }
-
-
-            } else {
-                throw new ExcecoesSintaticas(Token.TK_TEXT[Token.TK_LOOP2] + " era esperado, foi encontrado o token " + token.toString());
             }
+
+        } else {
+            throw new ExcecoesSintaticas(Token.TK_TEXT[Token.TK_LOOP2] + " era esperado, foi encontrado o token " + token.toString());
         }
+    }
 
-
-    private boolean leproximo(){
-        if(!scanner.isEOF()){
+    private boolean leproximo() {
+        if (!scanner.isEOF()) {
             token = scanner.nextToken();
             return true;
-        }
-        else{
+        } else {
             throw new ExcecoesSintaticas("Expressão incompleta, falta a sequencia do comando");
         }
     }
