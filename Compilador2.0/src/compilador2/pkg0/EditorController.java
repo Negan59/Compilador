@@ -103,10 +103,11 @@ public class EditorController implements Initializable {
         AnalisadoSintatico as = new AnalisadoSintatico(scanner2);
         try {
             as.P();
-            if (AnalisadoSintatico.errosSintatico.size() > 0) {
+            if (!AnalisadoSintatico.errosSintatico.isEmpty()) {
                 throw new ExcecoesSintaticas("Teve erro sintático viu");
             }
             Label l = new Label();
+            System.out.println("COMPILOU");
             l.setText("Compilação realizada com sucesso!!!");
             l.setStyle("-fx-text-fill: green;");
             lista.add(l);

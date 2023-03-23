@@ -13,8 +13,6 @@ public class AnalisadoSintatico {
     private Token token;
 
     private boolean estouFor = false;
-    private boolean dentroFor = false;
-    private boolean dentroWhile = false;
     public static ArrayList<Erro> errosSintatico = new ArrayList();
 
     public AnalisadoSintatico(Analisador scanner) {
@@ -23,10 +21,14 @@ public class AnalisadoSintatico {
     }
 
     public void P() {
-        System.out.println("P - "+token.toString());
         if (!scanner.isEOF()) {
             if (token.getType() == Token.TK_CONDITIONAL) {
                 C();
+                if (token!= null) {
+                    if (token.getType() != Token.TK_END) {
+                        P();
+                    }
+                }
             } else if (token.getType() == Token.TK_LOOP || token.getType() == Token.TK_LOOPFOR) {
                 R();
             } else if (token.getType() == Token.TK_IDENTIFIER) {
@@ -48,7 +50,6 @@ public class AnalisadoSintatico {
         leproximo();
         if (token.getType() == Token.TK_ASSIGN) {
             leproximo();
-            System.out.println("A - "+token.toString());
             E();
         } else {
             errosSintatico.add(new Erro(Token.TK_TEXT[Token.TK_ASSIGN] + " era esperado, foi encontrado o token " + token.toString(), token.getLine(), token.getColumn()));
@@ -66,8 +67,6 @@ public class AnalisadoSintatico {
 
     public void E() {
         D();
-        System.out.println("E - "+token.toString());
-        System.out.println(scanner.isEOF());
         if (!scanner.isEOF()) {
             leproximo();
             EA();
@@ -76,7 +75,6 @@ public class AnalisadoSintatico {
     }
 
     public void EA() {
-
         if (token.getType() == Token.TK_OPERATORA) {
             leproximo();
             E();
@@ -124,12 +122,7 @@ public class AnalisadoSintatico {
 
                 P();
             } else {
-                if (!scanner.isEOF()) {
-                    token = scanner.nextToken();
-                    if (token.getType() != Token.TK_END) {
-                        P();
-                    }
-                }
+                token = scanner.nextToken();
             }
         } else {
             errosSintatico.add(new Erro(Token.TK_TEXT[Token.TK_CONDITIONAL2] + " era esperado, foi encontrado o token " + token.toString(), token.getLine(), token.getColumn()));
@@ -149,20 +142,22 @@ public class AnalisadoSintatico {
         } else {
             F();
         }
-        //System.out.println("fim do r - "+token.toString());
-        
+        if (token != null) {
+            if (token.getType() != Token.TK_END) {
+                P();
+            }
+        }
+
     }
 
     public void W() {
-        dentroWhile = true;
         leproximo();
         ER();
         leproximo();
         if (token.getType() == Token.TK_LOOP2) {
             leproximo();
-            System.out.println("token : "+token.toString());
             P();
-            System.out.println("token : "+token.toString());
+            System.out.println("");
             if (token.getType() != Token.TK_END) {
                 errosSintatico.add(new Erro(Token.TK_TEXT[Token.TK_END] + " era esperado, foi encontrado o token " + token.toString(), token.getLine(), token.getColumn()));
                 while (token.getType() != Token.TK_IDENTIFIER && token.getType() != Token.TK_LOOP && token.getType() != Token.TK_LOOPFOR && token.getType() != Token.TK_CONDITIONAL) {
@@ -172,13 +167,7 @@ public class AnalisadoSintatico {
                 P();
 
             } else {
-                if (!scanner.isEOF()) {
-                    token = scanner.nextToken();
-                    if (token.getType() != Token.TK_END) {
-                        P();
-                    }
-                }
-                
+                token = scanner.nextToken();
             }
         } else {
             errosSintatico.add(new Erro(Token.TK_TEXT[Token.TK_LOOP2] + " era esperado, foi encontrado o token " + token.toString(), token.getLine(), token.getColumn()));
@@ -191,18 +180,23 @@ public class AnalisadoSintatico {
     }
 
     public void F() {
-        dentroFor = true;
         estouFor = true;
+        System.out.println("primeiro do for - " + token.toString());
         leproximo();
+        System.out.println("segundo do for - " + token.toString());
         A();
+        System.out.println("depois da atribuição - " + token.toString());
         ER();
+        System.out.println("depois da expressão relacional - " + token.toString());
         leproximo();
+        System.out.println("antes da segunda atribuicao - " + token.toString());
         A();
-        if (token.getType() == Token.TK_LOOP2 && !scanner.isEOF()) {
+        System.out.println("depois da segunda atribuicao - " + token.toString());
+        if (token.getType() == Token.TK_LOOP2) {
             leproximo();
             estouFor = false;
             P();
-            System.out.println("for - "+token.toString());
+            System.out.println("for - " + token.toString());
             if (token.getType() != Token.TK_END) {
                 errosSintatico.add(new Erro(Token.TK_TEXT[Token.TK_END] + " era esperado, foi encontrado o token " + token.toString(), token.getLine(), token.getColumn()));
                 while (token.getType() != Token.TK_IDENTIFIER && token.getType() != Token.TK_LOOP && token.getType() != Token.TK_LOOPFOR && token.getType() != Token.TK_CONDITIONAL) {
@@ -212,15 +206,7 @@ public class AnalisadoSintatico {
                 P();
 
             } else {
-                if (!scanner.isEOF()) {
-                    token = scanner.nextToken();
-                    System.out.println("fim do for - "+token.toString());
-                    if (token.getType() != Token.TK_END) {
-                        P();
-                    }
-                }else{
-                    return;
-                }
+                token = scanner.nextToken();
             }
 
         } else {
@@ -237,8 +223,9 @@ public class AnalisadoSintatico {
             token = scanner.nextToken();
             return true;
         } else {
+            System.out.println("erro");
             errosSintatico.add(new Erro("Expressão incompleta, falta a sequencia do comando", token.getLine(), token.getColumn()));
-            return false;
+            throw new ExcecoesSintaticas("Teve erro sintático viu");
         }
     }
 
