@@ -93,6 +93,10 @@ public class Analisador{
                         else if(term.equals("end")){
                             token.setType(Token.TK_END);
                         }
+                        
+                        else if(term.equals("eol")){
+                            token.setType(Token.TK_EOF);
+                        }
                         else{
                             token.setType(Token.TK_IDENTIFIER); 
                         }

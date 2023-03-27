@@ -24,7 +24,7 @@ public class AnalisadoSintatico {
         if (!scanner.isEOF()) {
             if (token.getType() == Token.TK_CONDITIONAL) {
                 C();
-                if (token!= null) {
+                if (token != null) {
                     if (token.getType() != Token.TK_END) {
                         P();
                     }
@@ -69,16 +69,19 @@ public class AnalisadoSintatico {
         D();
         if (!scanner.isEOF()) {
             leproximo();
-            EA();
+            System.out.println(token.toString());
+            if (token.getType() == Token.TK_OPERATORA) {
+                leproximo();
+                E();
+            } else if (token.getType() != Token.TK_EOF  && !estouFor) {
+                errosSintatico.add(new Erro("operador aritmetico era esperado" + token.toString(), token.getLine(), token.getColumn()));
+            }
+            if(token.getType() == Token.TK_EOF || token.getType() == Token.TK_END){
+                leproximo();
+            }
+            
         }
 
-    }
-
-    public void EA() {
-        if (token.getType() == Token.TK_OPERATORA) {
-            leproximo();
-            E();
-        }
     }
 
     public void D() {
@@ -87,20 +90,20 @@ public class AnalisadoSintatico {
         }
     }
 
-    public void OP() {
-        if (token.getType() == Token.TK_OPERATORR) {
-            leproximo();
-            D();
-        }
-    }
+ 
 
     public void ER() {
 
         D();
-        if (!scanner.isEOF()) {
+        leproximo();
+        if(token.getType() == Token.TK_OPERATORR){
             leproximo();
-            OP();
+            D();
         }
+        else{
+             errosSintatico.add(new Erro("Era esperado um Operador Relacional foi encontrado um operador do tipo " + token.toString(), token.getLine(), token.getColumn()));
+        }
+
     }
 
     public void C() {

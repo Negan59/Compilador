@@ -1,5 +1,5 @@
 P->A|C|R
-A-><identificador><atribuição>E
+A-><identificador><atribuição>E<eol>
 E->D|EA
 D-><identificador>|<numerico>
 EA->D<aritmetico>E
@@ -27,7 +27,7 @@ P(OP)->P(D)
 FOLLOW
 S(P)->{$},<else>,S(C),S(R)
 S(A)->{$},S(P),S(ER),<do>
-S(E)->{$},S(A),S(EA)
+S(E)->{$},S(A),S(EA),<eol>
 S(EA)->{$},S(E)
 S(C)->{$},S(P)
 S(R)->{$},S(P)
